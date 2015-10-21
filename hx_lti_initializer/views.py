@@ -19,7 +19,7 @@ from django.contrib.auth import login
 from django.contrib import messages
 
 from target_object_database.models import TargetObject
-from hx_lti_initializer.models import LTIProfile, LTICourse, User
+from hx_lti_initializer.models import LTIProfile, LTICourse, User, LTICourseAdmin
 from hx_lti_assignment.models import Assignment, AssignmentTargets
 from hx_lti_initializer.utils import debug_printer, get_lti_value, retrieve_token  # noqa
 from hx_lti_initializer.forms import CourseForm
@@ -298,6 +298,18 @@ def launch_lti(request):
             messages.warning(request, message_error)
             course_object = LTICourse.create_course(course, lti_profile)
 
+    # check to see if user is awaiting to be added as an admin on a course
+    # if so add them.
+    try:
+        userfound = LTICourseAdmin.objects.get(
+            admin_unique_identifier=lti_profile.user.username,
+            new_admin_course_id=course
+        )
+        course_object.course_admins.add(lti_profile)
+        userfound.delete()
+    except:
+        debug_printer("Not waiting to be added as admin")
+
     # logs the user in
     lti_profile.user.backend = 'django.contrib.auth.backends.ModelBackend'
     login(request, lti_profile.user)
@@ -309,23 +321,54 @@ def launch_lti(request):
 def edit_course(request, id):
     course = get_object_or_404(LTICourse, pk=id)
     if request.method == "POST":
+        debug_printer("%s" % request.POST)
         form = CourseForm(request.POST, instance=course)
         if form.is_valid():
             course = form.save()
             course.save()
 
+            # this removes an administrator if they were checked off the list
+            admins = course.course_admins.all()
+            selected_list = request.POST.getlist('select_existing_user') + request.POST['new_admin_list'].split(',')
+            for admin in admins:
+                if admin.user.username not in selected_list:
+                    course.course_admins.remove(admin)
+                else:
+                    selected_list.remove(admin.user.username)
+            course.save()
+
+            # this will create an item in the database so when the user
+            # that was just added as an admin logs in, they get added
+            # to the list of admins in the course.
+            if len(selected_list) > 0:
+                for name in selected_list:
+                    if str(name.strip()) != "":
+                        try:
+                            new_course_admin = LTICourseAdmin(
+                                admin_unique_identifier=name,
+                                new_admin_course_id=course.course_id
+                            )
+                            new_course_admin.save()
+                        except:
+                            # admin already pending
+                            debug_printer("Admin already pending.")
+
             messages.success(request, 'Course was successfully edited!')
             return redirect('hx_lti_initializer:course_admin_hub')
-        else:
-            raise PermissionDenied()
     else:
         form = CourseForm(instance=course)
+    try:
+        pending_admins = LTICourseAdmin.objects.filter(new_admin_course_id=course.course_id)
+    except:
+        pending_admins = None
+    debug_printer("WHAT")
     return render(
         request,
         'hx_lti_initializer/edit_course.html',
         {
             'form': form,
             'user': request.user,
+            'pending': pending_admins,
         }
     )
 

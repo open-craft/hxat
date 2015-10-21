@@ -6,14 +6,18 @@ throughout the LTI. Even courses is only related via the target objects.
 """
 
 from django.contrib import admin
-from hx_lti_initializer.models import LTIProfile, LTICourse
+from hx_lti_initializer.models import LTIProfile, LTICourse, LTICourseAdmin
 
 
 class LTIProfileAdmin(admin.ModelAdmin):
     pass
 
 
-class LTICourseAdmin(admin.ModelAdmin):
+class NewCourseAdmin(admin.ModelAdmin):
+    pass
+
+
+class LTICourseAdm(admin.ModelAdmin):
     fields = [
         'course_id',
         'course_name',
@@ -27,4 +31,5 @@ class LTICourseAdmin(admin.ModelAdmin):
         return str(self.course_id)
 
 admin.site.register(LTIProfile, LTIProfileAdmin)
-admin.site.register(LTICourse, LTICourseAdmin)
+admin.site.register(LTICourse, LTICourseAdm)
+admin.site.register(LTICourseAdmin, NewCourseAdmin)

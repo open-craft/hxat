@@ -157,3 +157,31 @@ class LTICourse(models.Model):
         course_object.save()
         course_object.course_admins.add(lti_profile)
         return course_object
+
+
+class LTICourseAdmin(models.Model):
+    """
+    """
+
+    # TODO: Add explanation
+    admin_unique_identifier = models.CharField(
+        max_length=255,
+    )
+
+    new_admin_course_id = models.CharField(
+        max_length=255,
+    )
+
+    class Meta:
+        verbose_name = _("Pending Admin")
+        unique_together = ("admin_unique_identifier", "new_admin_course_id")
+
+    def __unicode__(self):
+        """
+        When asked to print itself, this object will print the name
+        of the course.
+        """
+        return u"%s" % self.admin_unique_identifier
+
+    def __str__(self):
+        return self.admin_unique_identifier
