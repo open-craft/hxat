@@ -22,6 +22,8 @@
 <script src="{% static "vendors/development/video.dev.js" %}"></script>
 <script src="{% static "vendors/development/vjs.youtube.js" %}"></script>
 <script src="{% static "vendors/development/videojs-transcript.js" %}"></script>
+<script src="{% static "vendors/development/wavesurfer.min.js" %}"></script>
+<script src="{% static "vendors/development/videojs.wavesurfer.js" %}"></script>
 <script src="{% static "vendors/development/jquery-Watch.js" %}"></script>
 <script src="{% static "vendors/development/rangeslider.js" %}"></script>
 <script src="{% static "vendors/development/videojs-annotator-plugin.js" %}"></script>
@@ -62,7 +64,7 @@ Annotation Tool | Video | {{ target_object.target_title }}
 <section role="application" aria-label="Annotation Tool Video Content" style="height: 100%">
 	<div  id="viewer" class="test" style="padding-top:50px; height:80%;" class="fit-to-canvas">
 		<video id="vid1" class="video-js vjs-default-skin" controls preload="none" width="auto" height="100%" style="height:100%;">
-      <source src="{{ target_object.target_content | safe }}" type='video/youtube' />
+      <source src="/static/audio_sample.mp3" type='video/mp4' />
       <track kind="captions" src="/static/2NRQPzSNXLM.srt" srclang="en" label="English" default />
     </video>
 	</div>

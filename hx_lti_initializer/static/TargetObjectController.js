@@ -575,7 +575,12 @@
             var vidElement = jQuery(element).find('video')[0];
             if (typeof videojs !== undefined) {
                 this.vid = videojs(vidElement, {
-                    techOrder: ['html5', 'flash', 'youtube']
+                    techOrder: ['html5', 'flash', 'youtube'],
+                    plugins: {
+                        wavesurfer: {
+                            src:"/static/audio_sample.mp3",
+                        },
+                    },
                 }, {});
                 var self = this;
                     var options = {

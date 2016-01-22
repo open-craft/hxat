@@ -1,47 +1,37 @@
-(function (root, factory)
+(function(root, factory)
 {
     if (typeof define === 'function' && define.amd)
     {
-        // AMD. Register as an anonymous module.
-        define(['videojs', 'wavesurfer'], factory);
-    }
-    else if (typeof module === 'object' && module.exports)
-    {
-        // Node. Does not work with strict CommonJS, but
-        // only CommonJS-like environments that support module.exports,
-        // like Node.
-        module.exports = factory(require('video.js'), require('wavesurfer'));
+        define(['wavesurfer'], factory);
     }
     else
     {
-        // Browser globals (root is window)
-        root.returnExports = factory(root.videojs, root.WaveSurfer);
+        root.WaveSurfer.Videojs = factory(root.WaveSurfer);
     }
-}(this, function (videojs, WaveSurfer)
+}(this, function(WaveSurfer)
 {
-    var VjsComponent = videojs.getComponent('Component');
-
     /**
      * Use waveform for audio files in video.js player.
      */
-    videojs.Waveform = videojs.extend(VjsComponent,
-    {
+    videojs.Waveform = videojs.Component.extend({
+
         /**
          * The constructor function for the class.
-         *
+         * 
          * @param {videojs.Player|Object} player
          * @param {Object} options Player options.
+         * @param {Function} ready Ready callback function.
          */
-        constructor: function(player, options)
+        init: function(player, options, ready)
         {
             // run base component initializing with new options.
-            VjsComponent.call(this, player, options);
+            videojs.Component.call(this, player, options, ready);
 
             this.waveReady = false;
             this.waveFinished = false;
             this.liveMode = false;
 
-            if (this.options_.options.src === 'live')
+            if (this.options().options.src === 'live')
             {
                 // check if the Microphone plugin can be enabled
                 try
@@ -58,81 +48,38 @@
                 }
             }
 
-            if (this.options_.options.msDisplayMax !== undefined)
+            if (this.options().options.msDisplayMax !== undefined)
             {
-                // msDisplayMax indicates the number of seconds that is
+            	// msDisplayMax indicates the number of seconds that is
                 // considered the boundary value for displaying milliseconds
                 // in the time controls. An audio clip with a total length of
                 // 2 seconds and a msDisplayMax of 3 will use the format
                 // M:SS:MMM. Clips longer than msDisplayMax will be displayed
-                // as M:SS or HH:MM:SS.
-                this.msDisplayMax = parseFloat(this.options_.options.msDisplayMax);
+            	// as M:SS or HH:MM:SS.
+            	this.msDisplayMax = parseFloat(this.options().options.msDisplayMax);
             }
             else
             {
-                // default
-                this.msDisplayMax = 3;
+            	// default
+            	this.msDisplayMax = 3;
             }
 
-            // wait until player ui is ready
-            this.player().one('ready', this.setupUI.bind(this));
-        },
-
-        /**
-         * Player UI is ready.
-         */
-        setupUI: function()
-        {
             // customize controls
-            this.player().bigPlayButton.hide();
-
-            // the native controls don't work for this UI so disable
-            // them no matter what
-            if (this.player().usingNativeControls_ === true)
+            // this.player().bigPlayButton.hide();
+            if (this.player().options().controls)
             {
-                if (this.player().tech_.el_ !== undefined)
-                {
-                    this.player().tech_.el_.controls = false;
-                }
-            }
-
-            if (this.player().options_.controls)
-            {
-                // make sure controlBar is showing
-                this.player().controlBar.show();
-                this.player().controlBar.el().style.display = 'flex';
-
-                // progress control isn't used by this plugin
-                this.player().controlBar.progressControl.hide();
+            	// progress control isn't used by this plugin
+                //this.player().controlBar.progressControl.hide();
 
                 // prevent controlbar fadeout
                 this.player().on('userinactive', function(event)
                 {
-                    this.player().userActive(true);
+                   this.player().userActive(true);
                 });
 
-                // make sure time display is visible
-                var uiElements = [this.player().controlBar.currentTimeDisplay,
-                                  this.player().controlBar.timeDivider,
-                                  this.player().controlBar.durationDisplay];
-                for (var element in uiElements)
-                {
-                    // ignore when elements have been disabled by user
-                    if (uiElements[element] !== undefined)
-                    {
-                        uiElements[element].el().style.display = 'block';
-                        uiElements[element].show();
-                    }
-                }
-                if (this.player().controlBar.remainingTimeDisplay !== undefined)
-                {
-                    this.player().controlBar.remainingTimeDisplay.hide();
-                }
-                if (this.player().controlBar.timeDivider !== undefined)
-                {
-                    this.player().controlBar.timeDivider.el().style.textAlign = 'center';
-                    this.player().controlBar.timeDivider.el().style.width = '2em';
-                }
+                // videojs automatically hides the controls when no valid 'source'
+                // element is included in the 'audio' tag. Don't.
+                // this.player().controlBar.show();
 
                 // disable play button until waveform is ready
                 // (except when in live mode)
@@ -140,6 +87,10 @@
                 {
                     this.player().controlBar.playToggle.hide();
                 }
+
+                // disable currentTimeDisplay's 'timeupdate' event listener that
+                // constantly tries to reset the current time value to 0
+                //this.player().off('timeupdate');
             }
 
             // waveform events
@@ -162,6 +113,11 @@
             this.player().on('pause', this.onPause.bind(this));
             this.player().on('volumechange', this.onVolumeChange.bind(this));
             this.player().on('fullscreenchange', this.onScreenChange.bind(this));
+            console.log(this.player().controlBar.progressControl.seekBar);
+            this.player().controlBar.progressControl.seekBar.on('mouseup', (function(){
+                var distance = this.player().controlBar.progressControl.seekBar.getPercent();
+                this.surfer.seekTo(distance);
+            }).bind(this));
 
             // kick things off
             this.startPlayers();
@@ -194,7 +150,7 @@
          */
         startPlayers: function()
         {
-            var options = this.options_.options;
+            var options = this.options().options;
 
             // init waveform
             this.initialize(options);
@@ -229,41 +185,16 @@
 
         /**
          * Initializes the waveform.
-         *
+         * 
          * @param {Object} opts Plugin options.
          */
         initialize: function(opts)
         {
-            this.originalHeight = this.player().options_.height;
-            var controlBarHeight = this.player().controlBar.height();
-            if (this.player().options_.controls === true && controlBarHeight === 0)
-            {
-                // The dimensions of the controlbar are not known yet, but we need
-                // it now, so we can calculate the height of the waveform.
-                // The default height is 30px, so use that instead.
-                controlBarHeight = 30;
-            }
+            this.originalHeight = this.player().options().height;
 
             // set waveform element and dimensions
-            // Set the container to player's container if "container" option is not provided
-            // If a waveform needs to be appended to your custom element, then use below option
-            // <code>container: document.querySelector("#vjs-waveform")</code>
-            if (opts.container === undefined)
-            {
-                opts.container = this.el();
-            }
-
-            // Set the height of generated waveform if user has provided height from options.
-            // If height of waveform need to be customized then use option below.
-            // Example: <code>waveformHeight:30</code>
-            if (opts.waveformHeight === undefined)
-            {
-               opts.height = this.player().height() - controlBarHeight;
-            }
-            else
-            {
-               opts.height = opts.waveformHeight;
-            }
+            opts.container = this.el();
+            opts.height = this.player().height() - this.player().controlBar.height();
 
             // customize waveform appearance
             this.surfer.init(opts);
@@ -271,7 +202,7 @@
 
         /**
          * Start loading waveform data.
-         *
+         * 
          * @param {String|Blob|File} url Either the URL of the audio file,
          *     or a Blob or File object.
          */
@@ -294,32 +225,26 @@
         {
             if (this.liveMode)
             {
-                // start/resume microphone visualization
-                if (!this.microphone.active)
-                {
-                    this.microphone.start();
-                }
-                else
-                {
-                    this.microphone.play();
-                }
+                // toggle microphone
+                this.microphone.togglePlay();
             }
             else
             {
                 // start playback
                 this.surfer.play();
+                this.surfer.setVolume(0);
             }
         },
 
         /**
-         * Pauses playback or microphone visualization.
+         * Pauses playback or microphone.
          */
         pause: function()
         {
             if (this.liveMode)
             {
-                // pause microphone visualization
-                this.microphone.pause();
+                // toggle microphone
+                this.microphone.togglePlay();
             }
             else
             {
@@ -342,19 +267,13 @@
          */
         destroy: function()
         {
-            if (this.liveMode && this.microphone)
-            {
-                // destroy microphone plugin
-                this.microphone.destroy();
-            }
-
             this.surfer.destroy();
             this.player().dispose();
         },
 
         /**
          * Set the current volume.
-         *
+         * 
          * @param {Number} volume The new volume level.
          */
         setVolume: function(volume)
@@ -387,8 +306,9 @@
             var time = Math.min(currentTime, duration);
 
             // update control
-            this.player().controlBar.currentTimeDisplay.contentEl(
-                ).innerHTML = this.formatTime(time, duration);
+            this.player().controlBar.currentTimeDisplay.el(
+                ).firstChild.innerHTML = this.formatTime(
+                time, duration);
         },
 
         /**
@@ -405,8 +325,9 @@
             }
 
             // update control
-            this.player().controlBar.durationDisplay.contentEl(
-                ).innerHTML = this.formatTime(duration, duration);
+            this.player().controlBar.durationDisplay.el(
+                ).firstChild.innerHTML = this.formatTime(
+                duration, duration);
         },
 
         /**
@@ -417,6 +338,14 @@
             this.waveReady = true;
             this.waveFinished = false;
             this.liveMode = false;
+
+            // make sure the size of time controls is large enough to
+            // display milliseconds
+            if (this.surfer.getDuration() < this.msDisplayMax)
+            {
+                this.player().controlBar.durationDisplay.el().style.width = 
+                    this.player().controlBar.currentTimeDisplay.el().style.width = '6em';
+            }
 
             // update time display
             this.setCurrentTime();
@@ -429,7 +358,7 @@
             this.player().loadingSpinner.hide();
 
             // auto-play when ready (if enabled)
-            if (this.player().options_.autoplay)
+            if (this.player().options().autoplay)
             {
                 this.play();
             }
@@ -444,7 +373,7 @@
             if (!this.player().paused())
             {
                 // check if loop is enabled
-                if (this.player().options_.loop)
+                if (this.player().options().loop)
                 {
                     // reset waveform
                     this.surfer.stop();
@@ -452,8 +381,8 @@
                 }
                 else
                 {
-                    // finished
-                    this.waveFinished = true;
+                	// finished
+                	this.waveFinished = true;
 
                     // pause player
                     this.player().pause();
@@ -463,7 +392,7 @@
 
         /**
          * Fires continuously during audio playback.
-         *
+         * 
          * @param {Number} time Current time/location of the playhead.
          */
         onWaveProgress: function(time)
@@ -477,6 +406,10 @@
         onWaveSeek: function()
         {
             this.setCurrentTime();
+            var currentTime = this.surfer.getCurrentTime();
+            var duration = this.surfer.getDuration();
+            var time = Math.min(currentTime, duration);
+            this.player().currentTime(time);
         },
 
         /**
@@ -564,15 +497,15 @@
          */
         onWaveError: function(error)
         {
-            this.player().trigger('error', error);
+            console.warn(error);
         },
 
         /**
          * Format seconds as a time string, H:MM:SS, M:SS or M:SS:MMM.
-         *
+         * 
          * Supplying a guide (in seconds) will force a number of leading zeros
          * to cover the length of the guide.
-         *
+         * 
          * @param {Number} seconds Number of seconds to be turned into a string
          * @param {Number} guide Number (in seconds) to model the string after
          * @return {String} Time formatted as H:MM:SS, M:SS or M:SS:MMM.
@@ -639,7 +572,7 @@
             className: 'vjs-waveform',
             tabIndex: 0
         };
-        return VjsComponent.prototype.createEl('div', props);
+        return videojs.Component.prototype.createEl(null, props);
     };
 
     // plugin defaults
@@ -651,7 +584,7 @@
      */
     var wavesurferPlugin = function(options)
     {
-        var settings = videojs.mergeOptions(defaults, options);
+        var settings = jQuery.extend({}, defaults, options);
         var player = this;
 
         // create new waveform
@@ -668,7 +601,6 @@
     // register the plugin
     videojs.plugin('wavesurfer', wavesurferPlugin);
 
-    // return a function to define the module export
     return wavesurferPlugin;
 
 }));
