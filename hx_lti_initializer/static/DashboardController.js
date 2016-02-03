@@ -151,8 +151,33 @@
 		annotator.plugins.Store.loadAnnotationsFromSearch(loadFromSearch);
 	};
 
-	$.DashboardController.prototype.annotationsLoaded = function (annotations) {
+	$.DashboardController.prototype.annotationsLoaded = function (before_annotations) {
 		//console.log("AnnotationsLoaded Triggered");
+		//check permissions
+		var annotations = [];
+		var self = this;
+		var store = AController.annotationCore.annotation_tool.plugins.Store;
+		var permissions = AController.annotationCore.annotation_tool.plugins.Permissions;
+		jQuery.each(before_annotations, function(index, value) {
+			if (value.permissions !== undefined && (value.permissions.read.length === 0 || permissions.authorize('read', value, permissions.user))) {
+				annotations.push(value);
+			} else {
+				var child, h, _k, _len2, _ref1;
+				if (value.highlights != null) {
+				_ref1 = value.highlights;
+				for (_k = 0, _len2 = _ref1.length; _k < _len2; _k++) {
+				  h = _ref1[_k];
+				  if (!(h.parentNode != null)) {
+				    continue;
+				  }
+				  child = h.childNodes[0];
+				  jQuery(h).replaceWith(h.childNodes);
+				}
+				}
+				AController.annotationCore.annotation_tool.plugins.Store.unregisterAnnotation(value);
+			}
+		});
+
 		var self = this;
 		this.dashboardReady.done(function() {
 			if (typeof self.initOptions.focus_on_annotation !== "undefined") {

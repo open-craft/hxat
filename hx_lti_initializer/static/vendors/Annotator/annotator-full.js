@@ -2214,11 +2214,11 @@
       if (!Annotator.supported()) {
         return;
       }
-      if (this.annotator.plugins.Auth) {
+      /*if (this.annotator.plugins.Auth) {
         return this.annotator.plugins.Auth.withToken(this._getAnnotations);
       } else {
         return this._getAnnotations();
-      }
+      }*/
     };
 
     Store.prototype._getAnnotations = function() {
