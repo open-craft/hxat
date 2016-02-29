@@ -213,6 +213,11 @@
             
             // if person is trying to start making an annotation via keyboard
             if (jQuery(this).attr('data-toggled') == "false") {
+                AController.annotationCore.annotation_tool.plugins.Store.annotations.forEach(function(an){
+                    an.highlights.forEach(function(highlight){
+                        jQuery(highlight).contents().unwrap();
+                    });
+                });
 
                 // make the text editable and change UI to reflect change
                 jQuery('.content').attr('contenteditable', 'true');
@@ -330,6 +335,8 @@
             } else if(jQuery(this).attr('data-toggled') == "true") {
                 // if user has submitted highlights
 
+                var text = jQuery('.content').text();
+                var selected_text = /(\*)(.*)(\*)/.exec(text)[2]
                 // find range of the delimiter
                 // TODO: have a setting somewhere to set the delimiter
                 var rangesForAsterisks = getRangesForDelimiter("*");
@@ -347,7 +354,10 @@
                 jQuery('#make_annotations_panel').css('margin-top', '0px');
                 jQuery('#annotation-maker').removeClass("hidden");
                 jQuery(this).html("Save Annotation");
+
                 
+                jQuery('#selected_text').html('<em>Selected Text: </em>' + selected_text);
+
                 // focus on the first one for screen reader's sake!
                 jQuery('#id_annotation_text_screen_reader')[0].focus();
 

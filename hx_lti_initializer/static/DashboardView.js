@@ -119,11 +119,14 @@
         if (endIndex > annotationsList.length) {
             endIndex = annotationsList.length;
         };
-        var offsetList = []
+        var offsetList = [];
+        if (!updateStore) {
+             var annotationLength = annotationsList.length;
+        }
         for (var i = startIndex; i < endIndex; i++) {
             var annotation = annotationsList[i];
             var annotationItem = self.formatAnnotation(annotation);
-            annotationItem.index = i+1;
+            annotationItem.index = annotationLength - i;
             var html = self.initOptions.TEMPLATES.annotationItem(annotationItem);
             jQuery('.annotationsHolder').append(html);
             divObject = '.annotationItem.item-'+annotation.id.toString();
@@ -189,7 +192,12 @@
     $.DashboardView.prototype.addCreatedAnnotation = function(mediaType, annotation) {
         var self = this;
         var annotationItem = self.formatAnnotation(annotation);
-        annotationItem.index = self.initOptions.endpoint.annotationsMasterList.length;
+        
+        var firstItem = jQuery(jQuery('.annotationItem')[0]);
+        var reg = /(Annotation #)([0-9]+?)(?= created)/;
+        var digits = parseInt(reg.exec(firstItem.attr('aria-label'))[2], 10);
+
+        annotationItem.index = digits + 1;
         var html = self.initOptions.TEMPLATES[self.templateTypes[mediaType]](annotationItem);
         if (jQuery('.annotationItem').length == 0) {
             jQuery(self.holders[mediaType]).html('');
