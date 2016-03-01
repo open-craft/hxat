@@ -86,7 +86,7 @@
 
 	$.AnnotationMain.prototype.setUpHighlightTags = function(){
 		var self = window.AController.main || this;
-		console.log(self);
+		//console.log(self);
 		var tagOptions = self.initOptions.annotationMainOptions.highlightTags_options;
 		if (typeof tagOptions !== 'undefined') {
 			var fin = {};
@@ -126,7 +126,7 @@
 					colorTag = tag;
 				};
 			});
-			console.log(window.AController.targetObjectController);
+			//console.log(window.AController.targetObjectController);
 			if (typeof window.AController.targetObjectController !== "undefined" && typeof colorTag !== "undefined") {
 				window.AController.targetObjectController.colorizeAnnotation(annotation, self.tags[colorTag]);
 			};

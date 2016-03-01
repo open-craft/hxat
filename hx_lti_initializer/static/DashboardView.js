@@ -287,7 +287,7 @@
             annotationItems: [],
             show_instructor_tab: self.initOptions.show_instructor_tab,
         }));
-        console.log(self.initOptions);
+        //console.log(self.initOptions);
         jQuery('.resize-handle').css('right', jQuery('.annotationSection').css('width'));
         jQuery('.resize-handle.side').on('mousedown', function(e){
             self.resizing = true;
@@ -489,7 +489,7 @@
         });
 
         if (window.Annotator !== undefined && window.Annotator.prototype.isPrototypeOf(AController.annotationCore.annotation_tool)) {
-            console.log('it was all defined. problem is probably not here.');
+            //console.log('it was all defined. problem is probably not here.');
             AController.annotationCore.annotation_tool.subscribe('annotationHidden', function(annotationId) {
                 jQuery('.annotationItem.item-' + annotationId).hide();
             });
