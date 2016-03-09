@@ -58,7 +58,7 @@ class AssignmentTargets(models.Model):
         """
         """
         options = self.get_target_external_options_list()
-        if len(options) == 1:
+        if len(options) == 0:
             return "ImageView"
         else:
             return options[0] if options[0] != '' else "ImageView"
@@ -67,7 +67,7 @@ class AssignmentTargets(models.Model):
         """
         """
         options = self.get_target_external_options_list()
-        if len(options) == 1:
+        if len(options) < 2:
             return None
         else:
             return options[1] if options[1] != '' else None
