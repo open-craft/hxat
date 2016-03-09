@@ -81,7 +81,7 @@ div.video-js:hover > div.vjs-big-new-annotation.none {
 /* --- ControlBar --> AnContainerButtons --- */
 
 .vjs-default-skin .vjs-container-button-annotation{
-	width: 101px;
+	width: 65px;
 	cursor: pointer;
 	float: left;
 	position: absolute;

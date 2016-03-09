@@ -751,16 +751,18 @@ Util.mousePosition = function(e, offsetEl) {
         this.an = this.player_.annotations;
     };
 
+    videojs.ShowStatistics.prototype.buttonText = 'Show Statistics';
+
     videojs.ShowStatistics.prototype.createEl = function() {
         return videojs.Button.prototype.createEl.call(this, 'div', {
-            className: 'vjs-statistics-annotation vjs-control',
+            className: 'vjs-statistics-annotation vjs-control hidden',
             title: 'Show the Statistics',
         });
     };
 
     videojs.ShowStatistics.prototype.onClick = function() {
-        if (!this.an.options.showStatistics) this.an.showStatistics();
-        else this.an.hideStatistics();
+        // if (!this.an.options.showStatistics) this.an.showStatistics();
+        // else this.an.hideStatistics();
     };
 
 
@@ -784,6 +786,8 @@ Util.mousePosition = function(e, offsetEl) {
     videojs.ShowAnnotations.prototype.init_ = function() {
         this.an = this.player_.annotations;
     };
+
+    videojs.ShowAnnotations.prototype.buttonText = 'Show Annotations';
 
     videojs.ShowAnnotations.prototype.createEl = function() {
         return videojs.Button.prototype.createEl.call(this, 'div', {
@@ -828,6 +832,8 @@ Util.mousePosition = function(e, offsetEl) {
             title: 'New Annotation',
         });
     };
+
+    videojs.NewAnnotation.prototype.buttonText = 'Create New Annotation';
 
     videojs.NewAnnotation.prototype.onClick = function() {
         this.an.newan();
@@ -1258,10 +1264,12 @@ Util.mousePosition = function(e, offsetEl) {
     videojs.RangeSelectorBarL.prototype.init_ = function() {};
 
     videojs.RangeSelectorBarL.prototype.createEl = function() {
-        return videojs.Component.prototype.createEl.call(this, 'div', {
+        var element = videojs.Component.prototype.createEl.call(this, 'div', {
             className: 'vjs-barselector-left',
             innerHTML: '<span class="vjs-time-text">00:00</span>',
         });
+        element.setAttribute('aria-live', 'assertive');
+        return element;
     };
 
 
@@ -1283,10 +1291,12 @@ Util.mousePosition = function(e, offsetEl) {
     videojs.RangeSelectorBarR.prototype.init_ = function() {};
 
     videojs.RangeSelectorBarR.prototype.createEl = function() {
-        return videojs.Component.prototype.createEl.call(this, 'div', {
+        var element = videojs.Component.prototype.createEl.call(this, 'div', {
             className: 'vjs-barselector-right',
-            innerHTML: '<span class="vjs-time-text">00:00</span>'
+            innerHTML: '<span class="vjs-time-text">00:00</span>',
         });
+        element.setAttribute('aria-live', 'assertive');
+        return element;
     };
 
 
@@ -1492,8 +1502,9 @@ Util.mousePosition = function(e, offsetEl) {
         
         // Add the Max Concentration and Number of annotations
         if($(this.canvas).parent().find('.vjs-totan-anstat-annotation').length === 0) {
-            $(this.canvas).parent().append('<div class="vjs-totan-anstat-annotation">');
-            $(this.canvas).parent().append('<div class="vjs-maxcon-anstat-annotation">');
+            $(this.canvas).parent().append('<div tabindex="0" class="vjs-totan-anstat-annotation">');
+            $(this.canvas).parent().append('<div tabindex="0" class="vjs-maxcon-anstat-annotation">');
+            jQuery('.vjs-char-anstat-annotation').html('');
         }
         var textCanvas = $(this.canvas).parent().find('.vjs-totan-anstat-annotation')[0];
         textCanvas.innerHTML = TotAn + ' total annotations';

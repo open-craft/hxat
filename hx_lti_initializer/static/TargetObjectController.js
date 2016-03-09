@@ -677,6 +677,7 @@
                 }
                 var new_percentage = self.vid.rangeslider._percent(newleft);
                 self.vid.annotations.rsd.setPosition(0, new_percentage);
+                jQuery('.vjs-barselector-anpanel-annotation').removeClass('disable');
             });
 
             Mousetrap.bind('D', function(e){
@@ -689,6 +690,17 @@
                     new_percentage = 1.0;
                 }
                 self.vid.annotations.rsd.setPosition(0, new_percentage);
+                var max_entry = 0;
+                var points = AController.targetObjectController.vid.annotations.AnStat._getPoints();
+                console.log(points);
+                jQuery.each(points, function(index, entry) {
+                    if (entry.second < newleft) {
+                        console.log("test");
+                        max_entry = entry.entries;
+                    }
+                });
+                console.log(max_entry);
+                jQuery('.vjs-barselector-anpanel-annotation').removeClass('disable');
             });
              Mousetrap.bind('J', function(e){
                 var right = parseFloat(self.vid.annotations.rsdr.el_.style.left) / 100.00;
@@ -700,6 +712,7 @@
                 }
                 var new_percentage = self.vid.rangeslider._percent(newright);
                 self.vid.annotations.rsd.setPosition(1, new_percentage);
+                jQuery('.vjs-barselector-anpanel-annotation').removeClass('disable');
             });
 
             Mousetrap.bind('L', function(e){
@@ -712,6 +725,7 @@
                     new_percentage = 1.0;
                 }
                 self.vid.annotations.rsd.setPosition(1, new_percentage);
+                jQuery('.vjs-barselector-anpanel-annotation').removeClass('disable');
             });
 
             Mousetrap.bind('t', function(e){
@@ -794,6 +808,7 @@
                 }
                 var new_percentage = self.vid.rangeslider._percent(newleft);
                 self.vid.annotations.rsd.setPosition(0, new_percentage);
+                jQuery('.vjs-barselector-anpanel-annotation').removeClass('disable');
             });
 
             Mousetrap(iframe).bind('D', function(e){
@@ -806,6 +821,7 @@
                     new_percentage = 1.0;
                 }
                 self.vid.annotations.rsd.setPosition(0, new_percentage);
+                jQuery('.vjs-barselector-anpanel-annotation').removeClass('disable');
             });
              Mousetrap(iframe).bind('J', function(e){
                 var right = parseFloat(self.vid.annotations.rsdr.el_.style.left) / 100.00;
@@ -817,6 +833,7 @@
                 }
                 var new_percentage = self.vid.rangeslider._percent(newright);
                 self.vid.annotations.rsd.setPosition(1, new_percentage);
+                jQuery('.vjs-rangeselector-anpanel-annotation').addClass('active');
             });
 
             Mousetrap(iframe).bind('L', function(e){
@@ -829,8 +846,34 @@
                     new_percentage = 1.0;
                 }
                 self.vid.annotations.rsd.setPosition(1, new_percentage);
+                jQuery('.vjs-barselector-anpanel-annotation').removeClass('disable');
             });            
 
+            var allowKeyboardInput = function () {
+                window.userActivityInterval = setInterval(function() {
+                    AController.targetObjectController.vid.player_.userActivity_ = true;
+                }, 250);
+                jQuery('#keyboard-input-button').css('color', '#ffff00');
+            };
+
+            var stopKeyboardInput = function (){
+                clearInterval(window.userActivityInterval);
+            }
+            jQuery('#keyboard-input-button').on('mouseup', function (event){
+                allowKeyboardInput();
+            });
+
+            jQuery('#keyboard-input-button').on('keydown', function(event){
+                var keyCode = event.keyCode;
+                event = event || window.event;
+
+                switch(keyCode) {
+                    case 32:
+                    case 13:
+                        allowKeyboardInput();
+                        break;
+                }
+            });
         };
 
         $.TargetObjectController.prototype.colorizeAnnotation = function(annotationId, rgbColor) {
