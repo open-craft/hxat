@@ -38,6 +38,9 @@ from ims_lti_py.tool_provider import DjangoToolProvider
 from django.core.servers.basehttp import get_internal_wsgi_application
 from hx_lti_initializer.forms import CourseForm
 from hx_lti_initializer.models import LTICourse
+from hx_lti_initializer.utils import *
+from django.template import Context
+from django.template import Template
 
 settings.LTI_OAUTH_CREDENTIALS = {}
 settings.LTI_OAUTH_CREDENTIALS['123key'] = 'secret'
@@ -152,6 +155,7 @@ class LTIInitializerModelsTests(TestCase):
         This creates a user to test the LTIProfile autocreation
         """
         self.user = self.createFakeUser("FakeUsername", "AnOnYmOuSiD")
+        self.user3, self.profile = create_new_user("FakeUsername3", "AnOnYmOuSiD3", ['student'])
 
     def tearDown(self):
         """
@@ -167,6 +171,7 @@ class LTIInitializerModelsTests(TestCase):
         instructor = LTIProfile.objects.get(user=self.user)
         self.assertTrue(isinstance(instructor, LTIProfile))
         self.assertEqual(instructor.__unicode__(), instructor.user.username)
+        self.assertEqual(self.profile.get_id(), "AnOnYmOuSiD3")
 
     def test_LTICourse_create_course(self):
         """
@@ -177,6 +182,10 @@ class LTIInitializerModelsTests(TestCase):
         self.assertTrue(isinstance(course_object, LTICourse))
         self.assertEqual(
             course_object.__unicode__(),
+            course_object.course_name
+        )
+        self.assertEqual(
+            course_object.__str__(),
             course_object.course_name
         )
 
@@ -227,6 +236,34 @@ class LTIInitializerModelsTests(TestCase):
         list_of_courses3 = LTICourse.get_all_courses()
         self.assertTrue(isinstance(list_of_courses3, list))
         self.assertTrue(len(list_of_courses3) == 2)
+
+    def test_add_user(self):
+        """
+        """
+        instructor1 = LTIProfile.objects.get(user=self.user)
+        course = LTICourse.create_course('test_course_id', instructor1)
+        current_profiles = course.course_users.all()
+        self.assertTrue(self.profile not in current_profiles)
+        course.add_user(self.profile)
+        current_profiles = course.course_users.all()
+        self.assertTrue(self.profile in current_profiles)
+
+        course.add_user(self.profile)
+        current_profiles2 = course.course_users.all()
+        self.assertTrue(len(current_profiles) == len(current_profiles2))
+
+    def test_template_tags(self):
+        """
+        """
+        test_course = create_entire_course()
+        t = Template("{% load list_of_ids %}{{course.course_admins | list_of_ids | safe}}")
+        c = Context({"course": test_course})
+        self.assertEqual(t.render(c), unicode("['AnonID1', 'AnonID2']"))
+
+        empty_course = create_empty_course()
+        t = Template("{% load list_of_ids %}{{course.course_admins | list_of_ids | safe}}")
+        c = Context({"course": empty_course})
+        self.assertEqual(t.render(c), unicode("['AnonID4']"))
 
 
 class LTIInitializerViewsTests(TestCase):

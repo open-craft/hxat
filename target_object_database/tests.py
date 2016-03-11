@@ -82,7 +82,7 @@ class TODViewsTests(TestCase):
         )
 
         response2 = self.client.post(
-            'lti_init/launch_lti/annotation/%s/fake_id' %
+            'lti_init/launch_lti/annotation/%s/fake_id_fake' %
             self.assignment.assignment_id
         )
         self.assertRaises(
@@ -90,7 +90,7 @@ class TODViewsTests(TestCase):
             open_target_object,
             response2,
             self.assignment.assignment_id,
-            34
+            234
         )
 
     def test_get_admin_url(self):

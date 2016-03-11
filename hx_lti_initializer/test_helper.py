@@ -4,6 +4,9 @@ https://github.com/tophatmonocle/ims_lti_py/blob/develop/tests/test_helper.py
 """
 from ims_lti_py import ToolProvider
 from ims_lti_py import ToolConsumer
+from hx_lti_initializer.utils import *
+from hx_lti_initializer.models import LTICourse, LTIProfile
+from hx_lti_assignment.models import AssignmentTargets
 
 
 def create_params_tp():
@@ -75,3 +78,62 @@ def create_test_tc(params=None):
         }
 
     return tc
+
+
+def create_entire_course():
+    '''
+    '''
+    user1, lti_profile1 = create_new_user('FakeUser1', 'AnonID1', ['Instructor'])
+    user2, lti_profile2 = create_new_user('FakeUser2', 'AnonID2', ['Instructor'])
+
+    course = LTICourse(
+        course_name="Test Course 1",
+        course_id="TestingCourseId"
+    )
+
+    course.save()
+    course.course_admins.add(lti_profile1)
+    course.course_admins.add(lti_profile2)
+
+    assignment = Assignment(
+        assignment_name="Test Assignment",
+        pagination_limit=10,
+        course=course
+    )
+
+    assignment.save()
+
+    target_object1 = TargetObject(
+        target_title="Test Target Object 1",
+        target_author="Test Author",
+        target_content="Fake Content2",
+        target_citation="Fake Citation2",
+        target_type="tx"
+    )
+
+    target_object1.save()
+
+    assignmentTarget = AssignmentTargets(
+        assignment=assignment,
+        target_object=target_object1,
+        order=1,
+        target_external_css="",
+        target_instructions="Fake Instructions",
+        target_external_options=""
+    )
+
+    return course
+
+
+def create_empty_course():
+    course = LTICourse(
+        course_name="Test Course 1",
+        course_id="TestingCourseId"
+    )
+    user1, lti_profile1 = create_new_user('FakeUser3', None, ['Instructor'])
+    user2, lti_profile2 = create_new_user('FakeUser4', 'AnonID4', ['Instructor'])
+    course.save()
+
+    course.course_admins.add(lti_profile1)
+    course.course_admins.add(lti_profile2)
+    return course
