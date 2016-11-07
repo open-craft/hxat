@@ -42,6 +42,7 @@ INSTALLED_APPS = (
     'hx_lti_assignment',
     'target_object_database',
     'django_app_lti',
+    'ws4redis'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -81,6 +82,12 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'http_static/')
 
 TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'django.contrib.messages.context_processors.messages',
+    'ws4redis.context_processors.default',
+)
 
 MESSAGE_TAGS = {
             messages.SUCCESS: 'success success',
@@ -127,8 +134,17 @@ LOGGING = {
             'level': SECURE_SETTINGS.get('django_log_level', 'ERROR'),
         },
     },
-    
 }
+
+WEBSOCKET_URL = '/ws/'
+WS4REDIS_EXPIRE = 5
+WS4REDIS_PREFIX = 'ws'
+WS4REDIS_CONNECTION = {
+    'host': 'localhost',
+    'port': 6379
+}
+WS4REDIS_HEARTBEAT = '--heartbeat--'
+
 
 LTI_COURSE_ID = "context_id"
 LTI_COLLECTION_ID = "custom_collection_id"

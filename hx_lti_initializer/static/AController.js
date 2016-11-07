@@ -20,5 +20,24 @@ window.AController = window.AController || function(options) {
 		AController.dashboardView = AController.DashboardView;
 		AController.dashboardObjectController = new AController.DashboardController(options.dashboardControllerOptions, options.commonInfo, AController.dashboardView);
 	}
+
+	if (AController.Websocket !== undefined) {
+		AController.websocket = new AController.Websocket({
+			'failure_backup': function(){console.log("TODO: No failure_backup written.")},
+			'websocket_url': window.location.host,
+			'anon_id': jQuery('#user-id').html().trim(),
+			'fallback_url': '',
+			'fallback': function(){console.log("TODO: No fallback written.")},
+			'decode_message': function(message){
+				if (message.type == 'annotation_created') {
+					var annotation = JSON.parse(message.annotation);
+					AController.dashboardObjectController.endpoint.addNewAnnotationToMasterList(annotation);
+					AController.dashboardObjectController.viewer.addCreatedAnnotation(annotation.media, annotation);
+					AController.dashboardObjectController.endpoint.loadMoreAnnotations([annotation]);
+				}
+			},
+			'unique_key': jQuery('#unique_key').html().trim()
+		});
+	}
 	AController.main = new AController.AnnotationMain(options);
 }

@@ -30,6 +30,8 @@ from django.conf import settings
 from abstract_base_classes.target_object_database_api import TOD_Implementation
 from django.contrib.sites.models import get_current_site
 from ims_lti_py.tool_provider import DjangoToolProvider
+from ws4redis.publisher import RedisPublisher
+from ws4redis.redis_store import RedisMessage
 
 from urlparse import urlparse
 import urllib2
@@ -639,6 +641,20 @@ def annotation_database_create(request):
         data=json.dumps(json_body),
         headers=headers
     )
+
+    unique_key = 'annotations-' + session_context_id + '__' +session_collection_id + '__' + session_object_id
+    redis_publisher = RedisPublisher(facility=unique_key, broadcast=True)
+    if json.loads(response.content)['parent'] == '0':
+        message = RedisMessage(json.dumps({
+            'type': "annotation_created",
+            'annotation': response.content
+        }))
+    else:
+        message = RedisMessage(json.dumps({
+            'type': 'reply_created',
+            'reply': response.content
+        }))
+    redis_publisher.publish_message(message)
 
     try:
         if request.session['is_graded'] and response.status_code == 200:
