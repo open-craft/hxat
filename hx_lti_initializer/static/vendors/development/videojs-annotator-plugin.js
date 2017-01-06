@@ -121,7 +121,7 @@ Util.mousePosition = function(e, offsetEl) {
             plugin.annotator = annotator;
         
             // get annotations
-            var allannotations = annotator.plugins['Store'].annotations;
+            var allannotations = typeof(annotator.plugins['LocalStore']) !== 'undefined' ? annotator.plugins['LocalStore'].annotations : annotator.plugins['Store'].annotations;
             plugin.refreshDisplay();
         
             // -- Listener to Range Slider Plugin
@@ -232,12 +232,12 @@ Util.mousePosition = function(e, offsetEl) {
                     self.refreshDisplay();
             });
             annotator.subscribe("annotationDeleted", function (annotation) {
-                var annotations = annotator.plugins['Store'].annotations;
+                var annotations = typeof(annotator.plugins['LocalStore']) !== 'undefined' ? annotator.plugins['LocalStore'].annotations : annotator.plugins['Store'].annotations;
                 var tot = typeof annotations !== 'undefined' ? annotations.length : 0;
                 var attempts = 0; // max 100
                 // This is to watch the annotations object, to see when is deleted the annotation
                 var ischanged = function() {
-                    var new_tot = annotator.plugins['Store'].annotations.length;
+                    var new_tot = typeof(annotator.plugins['LocalStore']) !== 'undefined' ? annotator.plugins['LocalStore'].annotations.length : annotator.plugins['Store'].annotations.length;
                     if (attempts < 100)
                         setTimeout(function(){
                             if (new_tot !== tot) {
@@ -409,7 +409,7 @@ Util.mousePosition = function(e, offsetEl) {
         },
         refreshDisplay: function() {
             var count = 0;
-            var allannotations = this.annotator.plugins['Store'].annotations;
+            var allannotations = typeof(this.annotator.plugins['LocalStore']) !== 'undefined' ? this.annotator.plugins['LocalStore'].annotations : this.annotator.plugins['Store'].annotations;
             
             // Sort by date the Array
             this._sortByDate(allannotations);
@@ -1642,7 +1642,7 @@ Util.mousePosition = function(e, offsetEl) {
 
     videojs.AnStat.prototype._getNumberAnnotations = function(time, end) {
         var num = (typeof end !== 'undefined' && end) ? -1 : 0;
-        var allannotations = this.an.annotator.plugins['Store'].annotations;
+        var allannotations = typeof(this.an.annotator.plugins['LocalStore']) !== 'undefined' ? this.an.annotator.plugins['LocalStore'].annotations : this.an.annotator.plugins['Store'].annotations;
         for (var index in allannotations) {
             var an = allannotations[index];
             if (this.an._isVideoJS(an)) {

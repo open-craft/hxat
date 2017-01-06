@@ -1,3 +1,4 @@
+(function(Annotator) {
 /* 
  Reply Annotator Plugin v1.0 (https://github.com/danielcebrian/reply-annotator)
  Copyright (C) 2014 Daniel Cebrian Robles
@@ -108,3 +109,4 @@ Annotator.Plugin.Reply = (function(_super) {
 
 })(Annotator.Plugin);
 
+})(typeof(require) !== 'undefined' ? require('annotator') : window.Annotator);

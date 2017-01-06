@@ -8,6 +8,7 @@ include
 *.pyc
 *.sh
 htmlcov
+node_modules
 secure.py
 http_static
 production.py

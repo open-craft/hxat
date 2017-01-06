@@ -1,3 +1,4 @@
+(function(Annotator) {
 /* 
  HighlightTags Annotator Plugin v1.0 (https://github.com/lduarte1991/tags-annotator)
  Copyright (C) 2014 Luis F Duarte
@@ -361,3 +362,4 @@ Annotator.Plugin.HighlightTags.prototype.externalCall = function() {
     self.colorize();
     self.annotator.publish('finishedExternalCallToHighlightTags');
 };
+})(typeof(require) !== 'undefined' ? require('annotator') : window.Annotator);

@@ -1,0 +1,164 @@
+.xblock.vjs-fullscreen{
+    position:fixed;
+    overflow:hidden;
+    z-index:1000;
+    left:0;
+    top:0;
+    bottom:0;
+    right:0;
+    width:100%!important;
+    height:100%!important;
+    padding-top: 21px;
+    background-color: black;
+}
+.xblock.vjs-fullscreen #container {
+    width: 100%;
+    height: 100%;
+    height: calc(100% - 21px);
+    position: absolute;
+    margin-top: 21px;
+}
+
+.xblock.vjs-fullscreen #container #viewer {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
+
+.xblock.vjs-fullscreen #container #viewer .annotator-wrapper {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
+
+.xblock #vid1 {
+    height: 698px!important;
+}
+
+.xblock.vjs-fullscreen #vid1 {
+    height: 95%!important;
+    height: calc(100% - 68px)!important;
+}
+
+#full-content {
+	background-color: black !important;
+}
+
+.vjs-default-skin .vjs-volume-control {
+    margin-right: 20px;
+}
+
+.vjs-current-time-display,
+.vjs-time-divider div span,
+.vjs-duration-display,
+.vjs-controltimepanel-left-RS,
+.vjs-controltimepanel-right-RS {
+	line-height: 3em!important;
+}
+
+.vjs-new-annotation, .vjs-statistics-annotation {
+	display: none;
+}
+
+.vjs-container-button-annotation {
+	width: 33px!important;
+}
+
+.vjs-default-skin .vjs-controltimepanel-RS input {
+	height: 30px!important;
+}
+.vjs-menu-content {
+    color: white!important;
+}
+
+.sidebar#top-sidebar {
+ 	  background-color: black;
+    display: block;
+    position: relative;
+    margin-right: 16px;
+    margin-top:-43px;
+    float: right;
+    width: 125px;
+    height: 43px;
+    text-align: center;
+    color: white;
+    cursor: pointer;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    padding: 5px;
+  }
+.xblock.vjs-fullscreen .sidebar#top-sidebar {
+    border: 1px solid white;
+    margin-top: -23px;
+}
+ .annotationSection.side {
+    float: right;
+    margin-top: 0px;
+	  left: auto;
+	  width: 300px;
+	  min-width: 150px;
+	  height: 686px;
+	  background-image: url(https://hxat.harvardx.harvard.edu/static/vendors/mirador/images/debut_dark.png);
+	  padding: 5px;
+	  overflow-x: hidden;
+	  overflow-y: auto; /* let the browser control when to show/hide the scrollbar based on the content */
+    -moz-box-shadow: -4px 0px 4px rgba(0,0,0,0.3);
+    -webkit-box-shadow: -4px 0px 4px rgba(0,0,0,0.3);
+    box-shadow: -4px 0px 4px rgba(0,0,0,0.3);
+    /* For videojs */
+    z-index: 999!important;
+    /* For IE 8 */
+    -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=270, Color='rgba(0,0,0,0.3)')";
+  }
+
+  .xblock.vjs-fullscreen .annotationSection.side {
+    height: 100%;
+    height: calc(100% - 69px);
+  }
+
+ .annotationItem {
+    padding:10px;
+    overflow: hidden;
+    background-color: white;
+    border-bottom: 1px solid #888;
+  }
+  .annotationItem:nth-child(even){
+ 		background-color:#eee;
+  }
+  .annotationItem .playMediaButton {
+   cursor: pointer;
+    text-align: center;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 3px 0px;
+  }
+  .annotationItem .body {
+    font-family: Arial;
+    font-size: 11pt;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+ .tagList .tag {
+    overflow: hidden;
+    height: auto !important;
+    margin: 3px;
+    padding: 1px 3px;
+    background-color: #eff2f7;
+    color: #000;
+    cursor: pointer;
+    border: 1px solid #ccd5e4;
+    font-size: 11px;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    display: inline;
+    white-space: nowrap;
+ }
+ .filter-message {
+    background: black;
+    padding: 5px;
+    font-size: 11pt;
+    text-align: center;
+    color: white;
+    cursor: pointer;
+}

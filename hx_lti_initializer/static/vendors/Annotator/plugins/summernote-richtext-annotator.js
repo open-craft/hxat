@@ -1,3 +1,4 @@
+(function(Annotator) {
 Annotator.Plugin.SummernoteRichText = function(element, options) {
 	
 	// extends the Plugin class from Annotator
@@ -88,3 +89,5 @@ Annotator.Plugin.SummernoteRichText.prototype.submitEditor = function(field, ann
         annotation.text = text;
 	}
 };
+
+})(typeof(require) !== 'undefined' ? require('annotator') : window.Annotator);

@@ -1,3 +1,4 @@
+(function(Annotator) {
 Annotator.Plugin.TimeRangeEditor = function(element, options) {
 	
 	// extends the Plugin class from Annotator
@@ -54,3 +55,5 @@ Annotator.Plugin.TimeRangeEditor.prototype.updateEditor = function(field, annota
 	});
 
 };
+
+})(typeof(require) !== 'undefined' ? require('annotator') : window.Annotator);

@@ -1,0 +1,30 @@
+{
+  "name": "webpack_hxat_lite",
+  "version": "1.0.0",
+  "description": "",
+  "main": "webpack.config.js",
+  "dependencies": {
+    "css-loader": "^0.26.1",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "file-loader": "^0.9.0",
+    "html-webpack-plugin": "^2.24.1",
+    "imports-loader": "^0.7.0",
+    "jquery": "^1.9.1",
+    "resolve-url-loader": "^1.6.1",
+    "sass-loader": "^4.1.0",
+    "style-loader": "^0.13.1",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.14.0"
+  },
+  "devDependencies": {
+    "imports-loader": "^0.7.0",
+    "jquery": "^1.9.1",
+    "node-sass": "^4.1.1",
+    "stripcomment-loader": "^0.1.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
