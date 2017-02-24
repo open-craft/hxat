@@ -183,13 +183,22 @@ Annotator.Plugin.VideoJS = (function(_super) {
         // -- Editor
         function annotationEditorHidden(editor) {
             if (EditVideoAn()){
-                AController.targetObjectController.vid.rangeslider.hide(); // Hide Range Slider
-                AController.targetObjectController.vid.annotations.refreshDisplay(); // Reload the display of annotations
+                if (typeof(AController) !== 'undefined' && typeof(AController.targetObjectController.vid) !== 'undefined') {
+                    AController.targetObjectController.vid.rangeslider.hide(); // Hide Range Slider
+                    AController.targetObjectController.vid.annotations.refreshDisplay(); // Reload the display of annotations
+                } else if(typeof(window.vid) !== 'undefined'){
+                    window.vid.rangeslider.hide();
+                    window.vid.annotations.refreshDisplay();
+                }
             }
             annotator.unsubscribe("annotationEditorHidden", annotationEditorHidden);
         };
         function annotationEditorShown(editor, annotation) {
-            AController.targetObjectController.vid.annotations.editAnnotation(annotation, editor);
+            if (typeof(AController) !== 'undefined' && typeof(AController.targetObjectController.vid) !== 'undefined') {
+                AController.targetObjectController.vid.annotations.editAnnotation(annotation, editor);
+            } else if (typeof(window.vid) !== 'undefined') {
+                window.vid.annotations.editAnnotation(annotation, editor);
+            }
             annotator.subscribe("annotationEditorHidden", annotationEditorHidden);
         };
         // -- Annotations
@@ -200,7 +209,11 @@ Annotator.Plugin.VideoJS = (function(_super) {
         };
         // -- Viewer
         function hideViewer(){
-            AController.targetObjectController.vid.annotations.AnDisplay.onCloseViewer();
+            if (typeof(AController) !== 'undefined' && typeof(AController.targetObjectController.vid) !== 'undefined') {
+                AController.targetObjectController.vid.annotations.AnDisplay.onCloseViewer();
+            } else if (typeof(window.vid) !== 'undefined') {
+                window.vid.annotations.AnDisplay.onCloseViewer();
+            }
             annotator.viewer.unsubscribe("hide", hideViewer);
         };
         function annotationViewerShown(viewer, annotations) {

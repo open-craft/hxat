@@ -1,0 +1,15 @@
+.hx-warning.hx-alert {
+    background: rgba(255, 0, 0, 0.3);
+    overflow: hidden;
+    margin-bottom: 55px;
+    border: 2px solid rgba(255, 0, 0, 0.8);
+    border-radius: 5px;
+    font-weight: bold;
+    padding: 10px;
+}
+
+.annotationSection.side {
+	border-top: 8px solid rgb(50, 50, 50);
+	border-bottom: 8px solid rgb(50, 50, 50);
+	height: 575px;
+}

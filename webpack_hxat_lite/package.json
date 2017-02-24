@@ -5,9 +5,13 @@
   "main": "webpack.config.js",
   "dependencies": {
     "css-loader": "^0.26.1",
+    "expose-loader": "^0.7.1",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.9.0",
+    "handlebars": "^4.0.6",
+    "handlebars-loader": "^1.4.0",
     "html-webpack-plugin": "^2.24.1",
+    "i18next": "^7.0.0",
     "imports-loader": "^0.7.0",
     "jquery": "^1.9.1",
     "resolve-url-loader": "^1.6.1",

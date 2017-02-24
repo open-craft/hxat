@@ -1,3 +1,18 @@
+.hx-warning.hx-alert {
+    background: rgba(255, 0, 0, 0.3);
+    overflow: hidden;
+    margin-bottom: 55px;
+    border: 2px solid rgba(255, 0, 0, 0.8);
+    border-radius: 5px;
+    font-weight: bold;
+    padding: 10px;
+}
+
+.annotationSection.side {
+	border-top: 8px solid rgb(50, 50, 50);
+	border-bottom: 8px solid rgb(50, 50, 50);
+	height: 575px;
+}
 /* Base Reset
 -------------------------------------------------------------------- */
 
@@ -1493,14 +1508,14 @@ div.token-input-dropdown ul li.token-input-selected-dropdown-item {
  .annotationSection.side {
     float: right;
     margin-top: 0px;
-	  left: auto;
-	  width: 300px;
-	  min-width: 150px;
-	  height: 100%;
-	  background-image: url(https://hxat.harvardx.harvard.edu/static/vendors/mirador/images/debut_dark.png);
-	  padding: 5px;
-	  overflow-x: hidden;
-	  overflow-y: auto; /* let the browser control when to show/hide the scrollbar based on the content */
+	left: auto;
+	width: 300px;
+	min-width: 150px;
+	height: 686px;
+	background-image: url(https://hxat.harvardx.harvard.edu/static/vendors/mirador/images/debut_dark.png);
+	padding: 5px;
+	overflow-x: hidden;
+	overflow-y: auto; /* let the browser control when to show/hide the scrollbar based on the content */
     -moz-box-shadow: -4px 0px 4px rgba(0,0,0,0.3);
     -webkit-box-shadow: -4px 0px 4px rgba(0,0,0,0.3);
     box-shadow: -4px 0px 4px rgba(0,0,0,0.3);

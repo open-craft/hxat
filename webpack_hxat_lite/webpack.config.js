@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+var glob = require("glob");
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
@@ -9,8 +10,8 @@ const PATHS = {
     build: path.join(__dirname, 'build'),
     app: path.join(__dirname, 'app'),
     vendor: path.join(__dirname, '../http_static/vendors/development'),
-    annotator: path.join(__dirname, '../http_static/vendors/Annotator')
-
+    annotator: path.join(__dirname, '../http_static/vendors/Annotator'),
+    mirador: path.join(__dirname, '../http_static/vendors/mirador')
 };
 
 module.exports = {
@@ -35,7 +36,10 @@ module.exports = {
     		PATHS.app + '/index_image.js',
     		PATHS.vendor + '/json2.js',
             PATHS.app + '/common.js',
-    	],
+            PATHS.mirador + '/mirador.js',
+            path.join(__dirname, '../http_static/vendors/mirador-v2/js/lib/state-machine.min.js'),
+
+        ],
     	video:[
 	        PATHS.app + '/index_video.js',
 	        PATHS.vendor + '/json2.js',
@@ -55,8 +59,8 @@ module.exports = {
 		    PATHS.vendor + "/videojs-annotator-plugin.js",
 		    PATHS.annotator + "/plugins/videojs-annotator.js",
 		    PATHS.annotator + "/plugins/localstore-annotator.js",
-            PATHS.static_folder + "/AController.js",
-            PATHS.static_folder + "/TargetObjectController.js"
+            // PATHS.static_folder + "/AController.js",
+            // PATHS.static_folder + "/TargetObjectController.js"
 	    ]
 	},
 
@@ -82,6 +86,19 @@ module.exports = {
                 test: /mirador\.js/,
                 loader: 'imports-loader?define=>false&require=>false&exports=>false&module=>false'
             },
+            {
+                test: /state-machine\.min\.js/,
+                loader: 'expose-loader?StateMachine'
+            },
+            // {
+            //     test: /isfahan\.js/,
+            //     loader: 'expose-loader?Isfahan'
+            // },
+            // {
+            //     test: /mirador-v2\/.+\.js/,
+            //     loader: 'imports-loader?exports=>false&define=>false&require=>false'
+            // },
+
         ],
         modulesDirectories: [
           'node_modules'
@@ -90,12 +107,18 @@ module.exports = {
     plugins: [
         new ExtractTextPlugin('hxat_lite_[name].css'),
         new webpack.ProvidePlugin({
-            'Annotator': 'annotator'
-        })
+            'Annotator': 'annotator',
+            $: require.resolve('jquery'),
+            jQuery: require.resolve('jquery'),
+            'window.jQuery': require.resolve('jquery'),
+            // 'Handlebars': require.resolve('handlebars/dist/handlebars.min.js'),
+            'i18n': require.resolve('i18next'),
+            // 'Isfahan': PATHS.mirador + '/js/lib/isfahan.js'
+        }),
     ],
     resolve: {
         alias: {
-            'annotator': PATHS.annotator + '/annotator-full.js',
+            'annotator': PATHS.annotator + '/annotator-full.js'
         }
     }
 };

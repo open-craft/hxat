@@ -97,7 +97,7 @@
 	  left: auto;
 	  width: 300px;
 	  min-width: 150px;
-	  height: 686px;
+	  height: 673px;
 	  background-image: url(https://hxat.harvardx.harvard.edu/static/vendors/mirador/images/debut_dark.png);
 	  padding: 5px;
 	  overflow-x: hidden;
@@ -162,3 +162,20 @@
     color: white;
     cursor: pointer;
 }
+
+#transcript {
+    height: 150px;
+    overflow-y: scroll;
+}
+
+/*#transcript div[id^=transcript] {
+    height: 150px;
+}*/
+
+.transcript-line {
+    min-height: 20px;
+}
+
+/*#transcript .transcript-body {
+    height: 150px!important;
+}*/

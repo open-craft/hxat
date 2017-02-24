@@ -1,5 +1,6 @@
 require('./video-js.min.css');
 require('./annotator.css');
+require('./common.css');
 require('../../http_static/vendors/development/css/ova.css');
 require('../../http_static/vendors/development/css/rangeslider.css');
 require('../../http_static/vendors/development/css/summernote.css');
@@ -119,7 +120,7 @@ window.jQuery(document).ready(function() {
     window.isFiltered = false;
     window.transcript = self.vid.transcript(transcript_options);
     document.querySelector('#transcript').appendChild(window.transcript.el());
-     jQuery(document).bind('annotation_core_init', function() {
+    jQuery(document).bind('annotation_core_init', function() {
         self.vid.rangeslider(jQuery.extend(true, {}, {}));
         self.vid.annotations(jQuery.extend(true, {}, {posBigNew: "none"}));
         jQuery(self.vid.annotations.rsdl.el()).watch('left', function(data, i){

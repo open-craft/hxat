@@ -239,7 +239,9 @@ var scrollerProto = function(plugin) {
   };
 
   // Scroll an element's parent so the element is brought into view.
-  var scrollToElement = function (element) {
+  var scrollToElement = function (element1) {
+    var classFound = element1.className;
+    var element = jQuery(element1).find('.' + classFound + '-body');
     if (this.canScroll(element)) {
       var parent = element.parentElement.parentElement.parentElement;
       var parentOffsetBottom = parent.offsetTop + parent.clientHeight;

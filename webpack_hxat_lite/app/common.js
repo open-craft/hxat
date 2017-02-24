@@ -1,5 +1,11 @@
 jQuery(document).ready(function() {
 
+    if (window.location.host.indexOf('studio') !== -1) {
+        setTimeout(function() {
+            jQuery('#container').parent().prepend('<div class="hx-warning hx-alert">Warning: Due to issues in studio, the tool below may not be displayed correctly. Please view in "Preview" or "Live" to make sure things are okay.</div>')
+        }, 2000);
+    }
+
     // This will change the sizes of the sidebar and Mirador instances depending on whether the sidebar is present.
     jQuery('.sidebar').click(function() {
         if (jQuery(this).hasClass('open')) {
@@ -62,18 +68,23 @@ jQuery(document).ready(function() {
         }
     };
 
-    window.annotation_tool.subscribe("annotationsLoaded", function(annotations) {
-        if (annotations.length > 0) {
-            window.updateDashboard(annotations);
-        };
-    });
-    
-    window.annotation_tool.subscribe('annotationHidden', function(annotationId) {
-        jQuery('.annotationItem.item-' + annotationId).hide();
-    });
-    window.annotation_tool.subscribe('annotationShown', function(annotationId) {
-        jQuery('.annotationItem.item-' + annotationId).show();
-    });
+    if (typeof(window.annotation_tool) !== "undefined") {
+
+        window.annotation_tool.subscribe("annotationsLoaded", function(annotations) {
+            if (annotations.length > 0) {
+                window.updateDashboard(annotations);
+            };
+        });
+        
+        window.annotation_tool.subscribe('annotationHidden', function(annotationId) {
+            jQuery('.annotationItem.item-' + annotationId).hide();
+        });
+        window.annotation_tool.subscribe('annotationShown', function(annotationId) {
+            jQuery('.annotationItem.item-' + annotationId).show();
+        });
+    } else {
+        // Mirador doesn't use annotator events so this is triggered by the buttons pushed.
+    }
 
     window.updateDashboard = function(annotations) {
       jQuery('.annotationsHolder').html("");
@@ -83,6 +94,9 @@ jQuery(document).ready(function() {
                 html = "<div class='annotationItem item-"+value.id+"' role='listitem' aria-label='Annotation #"+index+"'><div class='playMediaButton'><span class='fa fa-youtube-play'></span> Play Clip</div><div class='body field' aria-label='Comment within group'>"+value.text+"</div><div class='tagList field side'>";
             } else if (value.media === "text") {
                 html = "<div class='annotationItem item-"+value.id+"' role='listitem' aria-label='Annotation #"+index+"'><div class='quote'>"+value.quote+"</div><div class='body field' aria-label='Comment within group'>"+value.text+"</div><div class='tagList field side'>";
+            } else if (value.media === "image") {
+                html = "<div class='annotationItem item-"+value.id+"' role='listitem' aria-label='Annotation #"+index+"'><div class='zoomToImageBounds'><img src='"+value.thumb+"'></div><div class='body field' aria-label='Comment within group'>"+value.text+"</div><div class='tagList field side'>";
+
             }
             
             jQuery.each(value.tags, function(ind, tag){
@@ -123,6 +137,12 @@ jQuery(document).ready(function() {
                     jQuery('html, body').animate({
                         scrollTop: jQuery('.annotator-hl[@data-annotation-id="' + value.id + '"').offset().top
                     }, 500);
+                });
+            } else if (value.media == 'image') {
+                jQuery('.annotationItem.item-'+value.id+' .zoomToImageBounds').click(function(){
+                    console.log(value);
+                    var ranges = value.rangePosition;
+                    jQuery.publish('fitBounds.'+Mirador.viewer.workspace.slots[0].window.id, {'x':ranges.x, 'y': ranges.y, 'width':ranges.width, 'height':ranges.height});
                 });
             }
             jQuery('.annotationItem.item-'+index+' .tagList .tag').click ( function(e) {
