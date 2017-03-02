@@ -2458,8 +2458,8 @@ div.video-js:hover > div.vjs-big-new-annotation.none {
 }
 
 .xblock.vjs-fullscreen #vid1 {
-    height: 95%!important;
-    height: calc(100% - 68px)!important;
+    height: 100%!important;
+    /*height: calc(100% - 68px)!important;*/
 }
 
 #full-content {
@@ -2601,3 +2601,21 @@ div.video-js:hover > div.vjs-big-new-annotation.none {
 /*#transcript .transcript-body {
     height: 150px!important;
 }*/
+
+.xblock.vjs-fullscreen #transcript {
+    position: fixed;
+    bottom: 0;
+    background: white;
+}
+
+.vjs-default-skin .vjs-controltimepanel-RS input {
+    background: rgba(0, 0, 0, 0)!important;
+}
+
+.xblock.vjs-fullscreen #container {
+    height: calc(100% - 68px)!important;
+}
+
+.xblock.vjs-fullscreen #container.transcript{
+    height: calc(100% - 213px)!important;
+}

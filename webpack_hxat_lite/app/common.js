@@ -37,7 +37,6 @@ jQuery(document).ready(function() {
         if (key == 27) {
             if (jQuery('.xblock').hasClass('vjs-fullscreen')) {
                 jQuery('.xblock').removeClass('vjs-fullscreen');
-                console.log("Hit Esc");
             }
             jQuery('.annotationSection.side').css('height', '');
         }
@@ -52,14 +51,30 @@ jQuery(document).ready(function() {
 
     function exitHandler()
     {
+        if (typeof(window.vid) !== 'undefined') {
+            setTimeout(function() {
+                jQuery('#container').removeClass('transcript');
+                if (jQuery('.xblock.vjs-fullscreen #vid1').length > 0 && jQuery('#transcript').is(':visible')) {
+                    jQuery('#container').addClass('transcript');
+                    var evt;
+                    try {
+                        evt = new Event('resize');
+                    } catch(e) {
+                        evt = window.document.createEvent('UIEvents');
+                        evt.initUIEvent('resize', true, false, window, 0);
+                    }
+                    window.dispatchEvent(evt);
+                }
+                window.vid.annotations.refreshDesignPanel();
+            }, 550);
+        }
+
         if (document.webkitIsFullScreen || document.mozFullScreen || document.msFullscreenElement !== null)
         {
             /* Run code on exit */
-            console.log("Exit handler");
             jQuery('.annotationSection.side').css('height', '');
             var exiter = function() {
                 if (jQuery('.xblock').hasClass('vjs-fullscreen')) {
-                    console.log("Removing fullscreen class");
                     jQuery('.xblock').removeClass('vjs-fullscreen');
                     setTimeout(exiter, 100);
                 } 
@@ -140,7 +155,6 @@ jQuery(document).ready(function() {
                 });
             } else if (value.media == 'image') {
                 jQuery('.annotationItem.item-'+value.id+' .zoomToImageBounds').click(function(){
-                    console.log(value);
                     var ranges = value.rangePosition;
                     jQuery.publish('fitBounds.'+Mirador.viewer.workspace.slots[0].window.id, {'x':ranges.x, 'y': ranges.y, 'width':ranges.width, 'height':ranges.height});
                 });

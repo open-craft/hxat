@@ -150,7 +150,9 @@ Util.mousePosition = function(e, offsetEl) {
                 } else {
                     $(player.annotator.wrapper[0]).removeClass('vjs-fullscreen');
                 }
-                plugin.refreshDesignPanel();
+                setTimeout(function(){
+                    plugin.refreshDesignPanel();
+                }, 500);
             });
         
             // loaded plugin
@@ -290,7 +292,6 @@ Util.mousePosition = function(e, offsetEl) {
             // active button
             this.ShowAn.addClass('active');
             this.options.showDisplay =true;
-            console.log(this);
             jQuery(this.player).trigger('annotationsDisplayed');
         },
         hideDisplay: function() {
@@ -342,8 +343,6 @@ Util.mousePosition = function(e, offsetEl) {
             
                 // lock the player        
                 this.rs.lock();
-                console.log(start);
-                console.log(end);
                 // play
                 if (!isPoint)
                     this.rs.playBetween(start, end);

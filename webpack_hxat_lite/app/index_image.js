@@ -80,14 +80,21 @@ window.jQuery(document).ready(function() {
             jQuery.ajax({ 
                 url: 'https://edge.edx.org/asset-v1:HarvardX+HxAT101+2015_T4+type@asset+block@cellx-euk-annotation-list.json', 
                 success: function(data){
-                    Mirador.viewer.workspace.slots[0].window.annotationsList = jQuery.map(data.resources, function(val) {
-                        val.endpoint = "manifest"
-                        return val;
-                    });
-                    jQuery.publish('annotationListLoaded.'+Mirador.viewer.workspace.slots[0].window.id);
+                    delayed = function() {
+                        if (Mirador.viewer.workspace.slots[0].window !== null) {
+                            Mirador.viewer.workspace.slots[0].window.annotationsList = jQuery.map(data.resources, function(val) {
+                                val.endpoint = "manifest"
+                                return val;
+                            });
+                            jQuery.publish('annotationListLoaded.'+Mirador.viewer.workspace.slots[0].window.id);
+                        } else {
+                            setTimeout(delayed, 200);
+                        }
+                    }
+                    delayed();
                 }
             });
-        }, 500);
+        }, 1000);
     } else {
         mira.eventEmitter('resizeMirador');
     }

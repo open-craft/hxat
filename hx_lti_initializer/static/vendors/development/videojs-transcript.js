@@ -231,7 +231,7 @@ var scrollerProto = function(plugin) {
       var time = now - startTime;
       self.isAutoScrolling = true;
       element.scrollTop = easeOut(time, startPos, change, duration);
-      if (element.scrollTop !== newPos) {
+      if (Math.abs(newPos-element.scrollTop) > 1.5) {
         requestAnimationFrame(updateScroll, element);
       }
     };
@@ -239,9 +239,8 @@ var scrollerProto = function(plugin) {
   };
 
   // Scroll an element's parent so the element is brought into view.
-  var scrollToElement = function (element1) {
-    var classFound = element1.className;
-    var element = jQuery(element1).find('.' + classFound + '-body');
+  var scrollToElement = function (element) {
+  
     if (this.canScroll(element)) {
       var parent = element.parentElement.parentElement.parentElement;
       var parentOffsetBottom = parent.offsetTop + parent.clientHeight;

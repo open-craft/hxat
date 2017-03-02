@@ -37,7 +37,8 @@ module.exports = {
     		PATHS.vendor + '/json2.js',
             PATHS.app + '/common.js',
             PATHS.mirador + '/mirador.js',
-            path.join(__dirname, '../http_static/vendors/mirador-v2/js/lib/state-machine.min.js'),
+            PATHS.app + '/state-machine.min.js'
+            // path.join(__dirname, '../http_static/vendors/mirador-v2/js/lib/state-machine.min.js'),
 
         ],
     	video:[

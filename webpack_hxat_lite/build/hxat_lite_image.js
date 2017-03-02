@@ -137,14 +137,21 @@
 	            jQuery.ajax({ 
 	                url: 'https://edge.edx.org/asset-v1:HarvardX+HxAT101+2015_T4+type@asset+block@cellx-euk-annotation-list.json', 
 	                success: function(data){
-	                    Mirador.viewer.workspace.slots[0].window.annotationsList = jQuery.map(data.resources, function(val) {
-	                        val.endpoint = "manifest"
-	                        return val;
-	                    });
-	                    jQuery.publish('annotationListLoaded.'+Mirador.viewer.workspace.slots[0].window.id);
+	                    delayed = function() {
+	                        if (Mirador.viewer.workspace.slots[0].window !== null) {
+	                            Mirador.viewer.workspace.slots[0].window.annotationsList = jQuery.map(data.resources, function(val) {
+	                                val.endpoint = "manifest"
+	                                return val;
+	                            });
+	                            jQuery.publish('annotationListLoaded.'+Mirador.viewer.workspace.slots[0].window.id);
+	                        } else {
+	                            setTimeout(delayed, 200);
+	                        }
+	                    }
+	                    delayed();
 	                }
 	            });
-	        }, 500);
+	        }, 1000);
 	    } else {
 	        mira.eventEmitter('resizeMirador');
 	    }
@@ -11749,7 +11756,6 @@
 	        if (key == 27) {
 	            if (jQuery('.xblock').hasClass('vjs-fullscreen')) {
 	                jQuery('.xblock').removeClass('vjs-fullscreen');
-	                console.log("Hit Esc");
 	            }
 	            jQuery('.annotationSection.side').css('height', '');
 	        }
@@ -11764,14 +11770,30 @@
 
 	    function exitHandler()
 	    {
+	        if (typeof(window.vid) !== 'undefined') {
+	            setTimeout(function() {
+	                jQuery('#container').removeClass('transcript');
+	                if (jQuery('.xblock.vjs-fullscreen #vid1').length > 0 && jQuery('#transcript').is(':visible')) {
+	                    jQuery('#container').addClass('transcript');
+	                    var evt;
+	                    try {
+	                        evt = new Event('resize');
+	                    } catch(e) {
+	                        evt = window.document.createEvent('UIEvents');
+	                        evt.initUIEvent('resize', true, false, window, 0);
+	                    }
+	                    window.dispatchEvent(evt);
+	                }
+	                window.vid.annotations.refreshDesignPanel();
+	            }, 550);
+	        }
+
 	        if (document.webkitIsFullScreen || document.mozFullScreen || document.msFullscreenElement !== null)
 	        {
 	            /* Run code on exit */
-	            console.log("Exit handler");
 	            jQuery('.annotationSection.side').css('height', '');
 	            var exiter = function() {
 	                if (jQuery('.xblock').hasClass('vjs-fullscreen')) {
-	                    console.log("Removing fullscreen class");
 	                    jQuery('.xblock').removeClass('vjs-fullscreen');
 	                    setTimeout(exiter, 100);
 	                } 
@@ -11852,7 +11874,6 @@
 	                });
 	            } else if (value.media == 'image') {
 	                jQuery('.annotationItem.item-'+value.id+' .zoomToImageBounds').click(function(){
-	                    console.log(value);
 	                    var ranges = value.rangePosition;
 	                    jQuery.publish('fitBounds.'+Mirador.viewer.workspace.slots[0].window.id, {'x':ranges.x, 'y': ranges.y, 'width':ranges.width, 'height':ranges.height});
 	                });

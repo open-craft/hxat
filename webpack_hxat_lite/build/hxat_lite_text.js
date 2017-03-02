@@ -11651,7 +11651,6 @@
 	        if (key == 27) {
 	            if (jQuery('.xblock').hasClass('vjs-fullscreen')) {
 	                jQuery('.xblock').removeClass('vjs-fullscreen');
-	                console.log("Hit Esc");
 	            }
 	            jQuery('.annotationSection.side').css('height', '');
 	        }
@@ -11666,14 +11665,30 @@
 
 	    function exitHandler()
 	    {
+	        if (typeof(window.vid) !== 'undefined') {
+	            setTimeout(function() {
+	                jQuery('#container').removeClass('transcript');
+	                if (jQuery('.xblock.vjs-fullscreen #vid1').length > 0 && jQuery('#transcript').is(':visible')) {
+	                    jQuery('#container').addClass('transcript');
+	                    var evt;
+	                    try {
+	                        evt = new Event('resize');
+	                    } catch(e) {
+	                        evt = window.document.createEvent('UIEvents');
+	                        evt.initUIEvent('resize', true, false, window, 0);
+	                    }
+	                    window.dispatchEvent(evt);
+	                }
+	                window.vid.annotations.refreshDesignPanel();
+	            }, 550);
+	        }
+
 	        if (document.webkitIsFullScreen || document.mozFullScreen || document.msFullscreenElement !== null)
 	        {
 	            /* Run code on exit */
-	            console.log("Exit handler");
 	            jQuery('.annotationSection.side').css('height', '');
 	            var exiter = function() {
 	                if (jQuery('.xblock').hasClass('vjs-fullscreen')) {
-	                    console.log("Removing fullscreen class");
 	                    jQuery('.xblock').removeClass('vjs-fullscreen');
 	                    setTimeout(exiter, 100);
 	                } 
@@ -11754,7 +11769,6 @@
 	                });
 	            } else if (value.media == 'image') {
 	                jQuery('.annotationItem.item-'+value.id+' .zoomToImageBounds').click(function(){
-	                    console.log(value);
 	                    var ranges = value.rangePosition;
 	                    jQuery.publish('fitBounds.'+Mirador.viewer.workspace.slots[0].window.id, {'x':ranges.x, 'y': ranges.y, 'width':ranges.width, 'height':ranges.height});
 	                });
@@ -11904,7 +11918,7 @@
 	            jQuery('#container').show();
 	            jQuery('.sidebar').show();
 	            jQuery('#hxat_lite_loading').hide();
-	            window.checkMultiplePages();
+	            // window.checkMultiplePages();
 	        }
 	    }); 
 
@@ -23076,7 +23090,7 @@
 /* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(jQuery) {(function(Annotator) {
+	/* WEBPACK VAR INJECTION */(function(jQuery) { (function(Annotator) {
 	  var $, Annotator, Delegator, LinkParser, Range, Util, base64Decode, base64UrlDecode, createDateFromISO8601, findChild, fn, functions, g, getNodeName, getNodePosition, gettext, parseToken, simpleXPathJQuery, simpleXPathPure, _Annotator, _gettext, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3, _ref4, _t,
 	    __slice = [].slice,
 	    __hasProp = {}.hasOwnProperty,
@@ -23208,8 +23222,8 @@
 	    return LocalStore;
 
 	  })(Annotator.Plugin);
-	  })(window.Annotator || __webpack_require__(46));
 
+	})(__webpack_require__(46));
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },

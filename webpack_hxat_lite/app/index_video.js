@@ -88,7 +88,6 @@ window.jQuery(document).ready(function() {
         jQuery.each(window.annotation_tool.plugins.LocalStore.annotations, function(index, value){ 
             if(value.id == parseInt(ann_id, 10)){
                 found = value;
-                console.log("Found");
             }
         });
         if (found !== undefined) {
@@ -148,4 +147,22 @@ window.jQuery(document).ready(function() {
     if (window.extra_options.transcript_on_load == "true") {
         jQuery("#transcript").show();
     }
+
+    jQuery('.vjs-transcript-control.vjs-control').click(function(){
+        setTimeout(function(){
+            if (jQuery('#transcript').is(':visible')) {
+                jQuery('#container').addClass('transcript');
+            } else {
+                jQuery('#container').removeClass('transcript');
+            }
+            var evt;
+            try {
+                evt = new Event('resize');
+            } catch(e) {
+                evt = window.document.createEvent('UIEvents');
+                evt.initUIEvent('resize', true, false, window, 0);
+            }
+            window.dispatchEvent(evt);
+        }, 250);
+    });
 });

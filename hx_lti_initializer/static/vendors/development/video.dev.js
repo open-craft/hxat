@@ -4405,7 +4405,6 @@ vjs.DownloadMenuButton.prototype.createMenu = function (){
       };
       if (downloads[i] === 'transcript') {
         jQuery.each(this.player().options_.tracks, function(index, value) {
-          console.log(value);
             menu.addChild(
               new vjs.DownloadMenuItem(self.player(), {'downloadItem': 'Download ' + value.label + ' Transcript', 'source': value.src})
             );
