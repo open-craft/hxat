@@ -23599,8 +23599,21 @@
 	__webpack_require__(39);
 
 	__webpack_provided_window_dot_jQuery(document).ready(function() {
+
+	    // get the options from the HTML template
+	    var video_url = jQuery('#video-url').html();
+	    var backup_video_url = jQuery('#backup-video-url').html();
+	    var transcript_url = jQuery('#transcript').html();
+	    var getSource = function(url_given) {
+	        if (url_given.indexOf('youtu') !== -1) {
+	            return "video/youtube";
+	        } else {
+	            return "video/mp4";
+	        }
+	    };
+
 	    var element = document.createElement('div');
-	    element.innerHTML = '<video id="vid1" class="video-js vjs-default-skin" controls="controls" preload="none" width="auto" height="698"><source src="'+jQuery('#video-url').html()+'" type="video/youtube" /> <track kind="captions" src="'+jQuery('#transcript').html()+'" srclang="en" label="English" default /></video>';
+	    element.innerHTML = '<video id="vid1" class="video-js vjs-default-skin" controls="controls" preload="none" width="auto" height="698"><source src="'+ backup_video_url +'" type="'+getSource(backup_video_url)+'" /><source src="'+ video_url +'" type="'+getSource(video_url)+'" /> <track kind="captions" src="'+ transcript_url +'" srclang="en" label="English" default /></video>';
 	    element.id = "viewer";
 	    jQuery('#container')[0].appendChild(element);
 	    jQuery('#transcript').html("");
@@ -28908,9 +28921,9 @@
 	};
 
 	vjs.Html5.canControlPlaybackRate = function(){
-	  var playbackRate = Html5.TEST_VID.playbackRate;
-	  Html5.TEST_VID.playbackRate = (playbackRate / 2) + 0.1;
-	  return playbackRate !== Html5.TEST_VID.playbackRate;
+	  var playbackRate = vjs.TEST_VID.playbackRate;
+	  vjs.TEST_VID.playbackRate = (playbackRate / 2) + 0.1;
+	  return playbackRate !== vjs.TEST_VID.playbackRate;
 	};
 
 	// List of all HTML5 events (various uses).
@@ -30821,7 +30834,9 @@
 	      // Get rid of the created DOM elements
 	      this.el_.parentNode.removeChild(this.el_);
 	      this.iframeblocker.parentNode.removeChild(this.iframeblocker);
-	      this.qualityButton.parentNode.removeChild(this.qualityButton);
+	      if (this.qualityButton && this.qualityButton.parentNode) {
+	        this.qualityButton.parentNode.removeChild(this.qualityButton);
+	      }
 	      
 	      this.player_.loadingSpinner.hide();
 	      this.player_.bigPlayButton.hide();
@@ -30890,6 +30905,10 @@
 
 	  return this.srcVal;
 	};
+
+	videojs.Youtube.prototype.currentSrc = function() {
+	  return this.srcVal;
+	}
 
 	videojs.Youtube.prototype.load = function(){};
 
@@ -33742,7 +33761,7 @@
 	                // Compare without extension
 	                var isYoutube = (isOpenVideojs && typeof this.player.techName !== 'undefined') ? (this.player.techName === 'Youtube') : false;
 	                var targetSrc = isYoutube ? an.target.src : an.target.src.substring(0, an.target.src.lastIndexOf("."));
-	                var playerSrc = isYoutube ? player.options_.sources[0].src : player.options_.sources[0].src.substring(0, player.options_.sources[0].src.lastIndexOf("."));
+	                var playerSrc = isYoutube ? player.player().currentSrc() : player.player().currentSrc().substring(0, player.player().currentSrc().lastIndexOf("."));
 	                isSource = (targetSrc === playerSrc);
 	            }
 	            return (isOpenVideojs && isVideo && isContainer && isSource && isNumber);

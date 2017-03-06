@@ -10,8 +10,21 @@ require('./video_annotation.css');
 require('../../http_static/vendors/development/css/token-input.css');
 
 window.jQuery(document).ready(function() {
+
+    // get the options from the HTML template
+    var video_url = jQuery('#video-url').html();
+    var backup_video_url = jQuery('#backup-video-url').html();
+    var transcript_url = jQuery('#transcript').html();
+    var getSource = function(url_given) {
+        if (url_given.indexOf('youtu') !== -1) {
+            return "video/youtube";
+        } else {
+            return "video/mp4";
+        }
+    };
+
     var element = document.createElement('div');
-    element.innerHTML = '<video id="vid1" class="video-js vjs-default-skin" controls="controls" preload="none" width="auto" height="698"><source src="'+jQuery('#video-url').html()+'" type="video/youtube" /> <track kind="captions" src="'+jQuery('#transcript').html()+'" srclang="en" label="English" default /></video>';
+    element.innerHTML = '<video id="vid1" class="video-js vjs-default-skin" controls="controls" preload="none" width="auto" height="698"><source src="'+ backup_video_url +'" type="'+getSource(backup_video_url)+'" /><source src="'+ video_url +'" type="'+getSource(video_url)+'" /> <track kind="captions" src="'+ transcript_url +'" srclang="en" label="English" default /></video>';
     element.id = "viewer";
     jQuery('#container')[0].appendChild(element);
     jQuery('#transcript').html("");

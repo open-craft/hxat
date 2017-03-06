@@ -182,7 +182,9 @@ videojs.Youtube = videojs.MediaTechController.extend({
       // Get rid of the created DOM elements
       this.el_.parentNode.removeChild(this.el_);
       this.iframeblocker.parentNode.removeChild(this.iframeblocker);
-      this.qualityButton.parentNode.removeChild(this.qualityButton);
+      if (this.qualityButton && this.qualityButton.parentNode) {
+        this.qualityButton.parentNode.removeChild(this.qualityButton);
+      }
       
       this.player_.loadingSpinner.hide();
       this.player_.bigPlayButton.hide();
@@ -251,6 +253,10 @@ videojs.Youtube.prototype.src = function(src){
 
   return this.srcVal;
 };
+
+videojs.Youtube.prototype.currentSrc = function() {
+  return this.srcVal;
+}
 
 videojs.Youtube.prototype.load = function(){};
 

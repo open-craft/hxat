@@ -634,7 +634,7 @@ Util.mousePosition = function(e, offsetEl) {
                 // Compare without extension
                 var isYoutube = (isOpenVideojs && typeof this.player.techName !== 'undefined') ? (this.player.techName === 'Youtube') : false;
                 var targetSrc = isYoutube ? an.target.src : an.target.src.substring(0, an.target.src.lastIndexOf("."));
-                var playerSrc = isYoutube ? player.options_.sources[0].src : player.options_.sources[0].src.substring(0, player.options_.sources[0].src.lastIndexOf("."));
+                var playerSrc = isYoutube ? player.player().currentSrc() : player.player().currentSrc().substring(0, player.player().currentSrc().lastIndexOf("."));
                 isSource = (targetSrc === playerSrc);
             }
             return (isOpenVideojs && isVideo && isContainer && isSource && isNumber);
