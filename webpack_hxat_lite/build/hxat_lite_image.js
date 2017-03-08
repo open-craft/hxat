@@ -155,6 +155,22 @@
 	    } else {
 	        mira.eventEmitter('resizeMirador');
 	    }
+	    jQuery('body').on('mouseover', '.annotation', function(){
+	        window.logThisForMe('hxat_lite_image_annotation_viewed', {'annotation_id': jQuery(this).attr('id')});
+	    });
+
+	    jQuery('body').on('mouseup', '.mirador-osd-annotations-layer', function(){
+	        window.logThisForMe('hxat_lite_image_toggle_annotations', {'annotation_id': jQuery(this).attr('id')});
+	    });
+
+	    jQuery('body').on('mouseup', '.hud-control', function(){
+	        window.logThisForMe('hxat_lite_image_mirador_control', {'control_clicked': jQuery(this).attr('class')});
+	    });
+
+	    jQuery('body').on('mouseup', '.zoomToImageBounds', function(){
+	        window.logThisForMe('hxat_lite_image_zoom_to_image', {'annotation_id': jQuery(this).parent().attr('class')});
+	    });
+
 	});
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(2)))
 
@@ -11725,6 +11741,24 @@
 	        }, 2000);
 	    }
 
+	    window.logThisForMe = function(action, thing) {
+	        var source = 'harvardx';
+	        var object = jQuery('.course-name').html().replace(/ /g, '').toLowerCase();
+
+	        if (window.location.host.indexOf('edx.org') === -1) {
+	            source = jQuery('.hx-lite-source-val').html().replace(/ /g, '').toLowerCase();
+	            object = jQuery('.hx-lite-object-val').html().replace(/ /g, '').toLowerCase();
+
+	            // trigger event that can be listened to by other Logging tools
+	            jQuery(document).trigger('logThisForMe', [source + '.' + object + '.' + action, JSON.stringify(thing)]);
+
+	        } else {
+	            Logger.log(source + '.' + object + '.' + action, JSON.stringify(thing));
+	            console.log(source + '.' + object + '.' + action, JSON.stringify(thing));
+	        }
+	        
+	    }
+
 	    // This will change the sizes of the sidebar and Mirador instances depending on whether the sidebar is present.
 	    jQuery('.sidebar').click(function() {
 	        if (jQuery(this).hasClass('open')) {
@@ -11902,6 +11936,14 @@
 	            });
 	          });
 	    };
+	    
+	    // logs whenever the user clicks on the sidebar to open and close it
+	    jQuery('body').on('click', '.sidebar', function(){
+	        setTimeout(function() {
+	            var state = jQuery('.annotationSection').is(':visible') ? 'open' : 'close';
+	            window.logThisForMe('hxat_toggled_sidebar', {'state': state});
+	        }, 200);
+	    });
 	});
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 

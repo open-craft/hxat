@@ -6,6 +6,23 @@ jQuery(document).ready(function() {
         }, 2000);
     }
 
+    window.logThisForMe = function(action, thing) {
+        var source = 'harvardx';
+        var object = jQuery('.course-name').html().replace(/ /g, '').toLowerCase();
+
+        if (window.location.host.indexOf('edx.org') === -1) {
+            source = jQuery('.hx-lite-source-val').html().replace(/ /g, '').toLowerCase();
+            object = jQuery('.hx-lite-object-val').html().replace(/ /g, '').toLowerCase();
+
+            // trigger event that can be listened to by other Logging tools
+            jQuery(document).trigger('logThisForMe', [source + '.' + object + '.' + action, JSON.stringify(thing)]);
+
+        } else {
+            Logger.log(source + '.' + object + '.' + action, JSON.stringify(thing));
+        }
+        
+    }
+
     // This will change the sizes of the sidebar and Mirador instances depending on whether the sidebar is present.
     jQuery('.sidebar').click(function() {
         if (jQuery(this).hasClass('open')) {
@@ -183,4 +200,12 @@ jQuery(document).ready(function() {
             });
           });
     };
+    
+    // logs whenever the user clicks on the sidebar to open and close it
+    jQuery('body').on('click', '.sidebar', function(){
+        setTimeout(function() {
+            var state = jQuery('.annotationSection').is(':visible') ? 'open' : 'close';
+            window.logThisForMe('hxat_toggled_sidebar', {'state': state});
+        }, 200);
+    });
 });

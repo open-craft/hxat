@@ -98,4 +98,20 @@ window.jQuery(document).ready(function() {
     } else {
         mira.eventEmitter('resizeMirador');
     }
+    jQuery('body').on('mouseover', '.annotation', function(){
+        window.logThisForMe('hxat_lite_image_annotation_viewed', {'annotation_id': jQuery(this).attr('id')});
+    });
+
+    jQuery('body').on('mouseup', '.mirador-osd-annotations-layer', function(){
+        window.logThisForMe('hxat_lite_image_toggle_annotations', {'annotation_id': jQuery(this).attr('id')});
+    });
+
+    jQuery('body').on('mouseup', '.hud-control', function(){
+        window.logThisForMe('hxat_lite_image_mirador_control', {'control_clicked': jQuery(this).attr('class')});
+    });
+
+    jQuery('body').on('mouseup', '.zoomToImageBounds', function(){
+        window.logThisForMe('hxat_lite_image_zoom_to_image', {'annotation_id': jQuery(this).parent().attr('class')});
+    });
+
 });
