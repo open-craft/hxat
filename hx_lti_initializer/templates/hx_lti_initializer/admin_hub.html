@@ -39,7 +39,7 @@
                         <i class='assignment-toggle fa fa-caret-right fa-lg' style='color:rgb(55, 124, 182);'></i>&nbsp;<span class='assignment-title'>{{assignment.assignment_name}}</span>
                         {% if not assignment.is_published %}<span class="assignment-unpublished">Unpublished</span>{% endif %}
                         </div>
-                        <div style="float: left; min-width: 170px; width: 34%;">
+                        <div style="float: left; min-width: 170px; width: 98%;">
                         {% if is_instructor %}
                             <a class='edit-assignment-button' href="{%url 'hx_lti_assignment:edit_assignment' id=assignment.pk %}"'><i class='fa fa-pencil' style='margin-right:4px'></i> Edit assignment</a>
                         {% endif %}

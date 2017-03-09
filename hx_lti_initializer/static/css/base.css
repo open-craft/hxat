@@ -333,11 +333,12 @@ footer {
 }
 
 .assignment-item .edit-assignment-button {
-	padding: 5px 20px;
 	border: 2px solid rgb(55, 124, 182);
 	border-radius: 5px;
-  text-decoration: none;
-  float: right;
+    text-decoration: none;
+    text-align: center;
+    width: 100%;
+    display: block;
 }
 .assignment-item .edit-assignment-button:hover {
 	border: 2px solid black;
@@ -392,6 +393,9 @@ footer {
 @media screen and (max-width: 790px) {
 	.table-row a:first-child {
 		width: 60%;
+	}
+	.table-row a:nth-child(2) {
+		width: 50%;
 	}
 }
 
