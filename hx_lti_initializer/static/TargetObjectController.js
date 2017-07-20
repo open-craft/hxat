@@ -60,6 +60,7 @@
             Annotator._instances[0].destroy();
             AController.annotationCore.element = jQuery('.content');
             AController.annotationCore.init("text");
+            AController.annotationCore.annotation_tool.plugins.Store._getAnnotations();
         };
 
         // function from: http://stackoverflow.com/questions/4811822/get-a-ranges-start-and-end-offsets-relative-to-its-parent-container
@@ -211,6 +212,7 @@
         // deals with the button that turns on keyboard annotations
         jQuery('#make_annotations_panel button').click(function(){
             AController.utils.logThatThing('clicked_keyboard_input_button', {'media': 'text'}, 'harvardx', 'hxat');
+            AController.dashboardObjectController.endpoint._clearAnnotator();
             // if person is trying to start making an annotation via keyboard
             if (jQuery(this).attr('data-toggled') == "false") {
 
@@ -368,6 +370,7 @@
                     "parent": "0",
                     "media": "text",
                 };
+                AController.annotationCore.annotation_tool.setupAnnotation(window.savingAnnotation);
             } else {
                 clearKeyboardInput();
 
@@ -492,6 +495,7 @@
                 case 13:
                     toggleqtip();
                     jQuery('#keyboard-input-button').css('color', '#ffff00');
+                    jQuery('.openseadragon-canvas').focus();
                     break;
             }
         });
@@ -606,9 +610,9 @@
                     break;
             }
         });
-        };
+    };
 
-        $.TargetObjectController.prototype.setUpTargetAsVideo = function(element, targetObject) {
+    $.TargetObjectController.prototype.setUpTargetAsVideo = function(element, targetObject) {
             var vidElement = jQuery(element).find('video')[0];
             var d_items = [];
             if (this.initOptions.transcript_download) {
@@ -628,8 +632,14 @@
                         showTitle: false,
                         showTrackSelector: false,
                     };
-                    var transcript = self.vid.transcript(options);
-                    document.querySelector('#transcript').appendChild(transcript.el());
+                    // if (jQuery(vidElement).find('source').length > 0) {
+                        var transcript = self.vid.transcript(options);
+                        document.querySelector('#transcript').appendChild(transcript.el());
+                    // } else {
+                    //     jQuery('.vjs-transcript-control.vjs-control').click();
+                    //     jQuery('.vjs-transcript-control.vjs-control').hide();
+                    // }
+                    
                 jQuery(document).bind('annotation_core_init', function() {
                     self.vid.rangeslider(jQuery.extend(true, {}, {}));
                     self.vid.annotations(jQuery.extend(true, {}, {posBigNew: "none"}));
