@@ -74,7 +74,12 @@ def launch_lti(request):
         lti_username = get_lti_value('lis_person_sourcedid', tool_provider)
         if not lti_username:
             debug_printer('DEBUG - user_id not found in post.')
-            raise PermissionDenied()
+            # raise PermissionDenied()
+            try:
+                from base64 import b64encode
+                lti_username = b64encode(user_id.decode('hex')).strip('=')
+            except TypeError:
+                lti_username = user_id
 
     lti_grade_url = get_lti_value('lis_outcome_service_url', tool_provider)
     if lti_grade_url is not None:
