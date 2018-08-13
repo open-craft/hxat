@@ -5453,7 +5453,7 @@ window.Mirador = window.Mirador || function(config) {
       annotation.rangePosition = {"x":regionArray[0], "y":regionArray[1], "width":regionArray[2], "height":regionArray[3]};
 
       var imageUrl = $.Iiif.getImageUrl(this.parent.imagesList[$.getImageIndexById(this.parent.imagesList, oaAnnotation.on.source)]);
-      imageUrl = imageUrl + "/" + regionArray.join(',') + "/full/0/native.jpg";
+      imageUrl = imageUrl + "/" + regionArray.join(',') + "/full/0/default.jpg";
       annotation.thumb = imageUrl;
 
       region = oaAnnotation.on.scope.value;
